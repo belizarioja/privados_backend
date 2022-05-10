@@ -25,10 +25,10 @@ const config = require("./config/general")
 const SERVIDOR = config.SERVIDOR
 
 app.post(SERVIDOR + '/login', function (req, res, next) {
-    const { usuario, clave } = req.body;
-    if (!usuario || !clave) {
+    const { usuario, clave } = req.body
+    /* if (usuario.length === 0 || clave.length === 0) {
         res.status(400).send('Se requiere Usuario y Clave')
-    }
+    } */
     usermodel.login(usuario, clave).then(resp => {
         const cant = resp.length
         if (cant > 0) {
@@ -224,7 +224,7 @@ app.get(SERVIDOR + '/', function (req, res) {
 });
 
 // const PORT = process.env.PORT
-const PORT = config.PORT || 4002
+const PORT = config.PORT || 4004
 
 app.listen(PORT, () => {
     console.log(`Servidor ejecutando en puerto ${PORT}.`)
