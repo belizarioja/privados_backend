@@ -25,6 +25,16 @@ module.exports = {
         const resultados = await conexion.query(sqlsel + where + order)
         return resultados.rows
     },
+    async editartopicositems (co_encuesta, co_seccion, co_topico, co_topico_item, tx_topico_item) {
+        const update = "update t_topico_items "
+        const sqlset = " set tx_topico_item = '" + tx_topico_item + "'"
+        let where = " where co_encuesta = " + co_encuesta
+        where += " and co_seccion = " + co_seccion
+        where += " and co_topico = " + co_topico
+        where += " and co_topico_item = " + co_topico_item
+        const resultados = await conexion.query(update + sqlset + where)
+        return true
+    },
     async listartipotopicos () {
         const sqlsel = "select * from t_tipo_topicos order by 1 asc "
         const resultados = await conexion.query(sqlsel)

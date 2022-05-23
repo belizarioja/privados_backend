@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // const usuarios = require("./controllers/user.controller.js");
 const usermodel = require("./models/user.models")
+const sedemodel = require("./models/sede.models")
 const encuestamodel = require("./models/encuesta.models")
 const seccionmodel = require("./models/seccion.models")
 const topicomodel = require("./models/topico.models")
@@ -43,7 +44,7 @@ app.post(SERVIDOR + '/login', function (req, res, next) {
     }).catch(err => {
         res.status(500).send('Error obteniendo login ' + err)
     });
-});
+})
 app.get(SERVIDOR + '/listarusuarios', (req, res) => {
     usermodel.listarusuarios().then(resp => {
         if (resp) {
@@ -55,7 +56,56 @@ app.get(SERVIDOR + '/listarusuarios', (req, res) => {
         }
     }).catch(err => {
         res.json({
-            message: "Error marcando asistencia " + err,
+            message: "Error listando usuarios " + err,
+            status: 500
+        })
+    })
+
+})
+
+app.post(SERVIDOR + '/crearusuario', (req, res) => {
+    const { tx_usuario, tx_clave, tx_nombre, co_rol } = req.body;
+    usermodel.crearusuario(tx_usuario, tx_clave, tx_nombre, co_rol).then(resp => {
+        if (resp) {
+            res.status(200).send('Usuario creada con éxito')
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error creando usuario " + err,
+            status: 500
+        })
+    })
+
+})
+app.get(SERVIDOR + '/listarroles', (req, res) => {
+    usermodel.listarroles().then(resp => {
+        if (resp) {
+            res.json({
+                message: "Listado de roles con Exito",
+                resp,
+                status: 200
+            })
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error listando roles " + err,
+            status: 500
+        })
+    })
+
+})
+app.get(SERVIDOR + '/listarsedes', (req, res) => {
+    sedemodel.listarsedes().then(resp => {
+        if (resp) {
+            res.json({
+                message: "Listado de sedes con Exito",
+                resp,
+                status: 200
+            })
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error listando sedes " + err,
             status: 500
         })
     })
@@ -79,14 +129,29 @@ app.get(SERVIDOR + '/listarencuestas', (req, res) => {
 
 })
 app.post(SERVIDOR + '/crearencuesta', (req, res) => {
-    const { tx_encuesta } = req.body;
-    encuestamodel.crearencuesta(tx_encuesta).then(resp => {
+    const { tx_encuesta, co_tipo_encuesta } = req.body;
+    encuestamodel.crearencuesta(tx_encuesta, co_tipo_encuesta).then(resp => {
         if (resp) {
             res.status(200).send('Encuesta creada con éxito')
         }
     }).catch(err => {
         res.json({
             message: "Error creando encuesta " + err,
+            status: 500
+        })
+    })
+
+})
+
+app.post(SERVIDOR + '/crearsede', (req, res) => {
+    const { tx_sede } = req.body;
+    sedemodel.crearsede(tx_sede).then(resp => {
+        if (resp) {
+            res.status(200).send('Sede creada con éxito')
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error creando sede " + err,
             status: 500
         })
     })
@@ -198,6 +263,21 @@ app.post(SERVIDOR + '/listartopicositems', (req, res) => {
 
 })
 
+app.post(SERVIDOR + '/editartopicositems', (req, res) => {
+    const { co_encuesta, co_seccion, co_topico, co_topico_item, tx_topico_item } = req.body;
+    topicomodel.editartopicositems(co_encuesta, co_seccion, co_topico, co_topico_item, tx_topico_item).then(resp => {
+        if (resp) {
+            res.status(200).send('Actualizado de items de topicos con Exito')
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error listando items de topicos " + err,
+            status: 500
+        })
+    })
+
+})
+
 app.post(SERVIDOR + '/guardaresultados', (req, res) => {
     const { resultados } = req.body;
     resultadomodel.guardaresultados(resultados).then(resp => {
@@ -211,6 +291,41 @@ app.post(SERVIDOR + '/guardaresultados', (req, res) => {
     }).catch(err => {
         res.json({
             message: "Error guardando Resultados de encuestas >>>>>>> " + err,
+            status: 500
+        })
+    })
+
+})
+app.get(SERVIDOR + '/mostrarresultados', (req, res) => {
+    resultadomodel.mostrarresultados().then(resp => {
+        if (resp) {
+            res.json({
+                message: "Resultados de encuestas mostrados con Exito",
+                resp,
+                status: 200
+            })
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error mostrando Resultados de encuestas >>>>>>> " + err,
+            status: 500
+        })
+    })
+
+})
+app.post(SERVIDOR + '/graficar', (req, res) => {
+    const { co_encuesta, co_seccion, co_topico, co_sede } = req.body;
+    resultadomodel.graficar(co_encuesta, co_seccion, co_topico, co_sede).then(resp => {
+        if (resp) {
+            res.json({
+                message: "Resultados de graficas con Exito",
+                resp,
+                status: 200
+            })
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error mostrando Resultados de Graficas >>>>>>> " + err,
             status: 500
         })
     })

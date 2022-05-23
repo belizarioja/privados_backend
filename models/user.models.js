@@ -21,5 +21,24 @@ module.exports = {
         const resultados = await conexion.query(sql)
         // console.log(resultados);
         return resultados.rows;
+    },
+    async listarroles () {
+        // const clavehash = crypto.createHash('md5').update(clave).digest("hex");
+        const sql = "select * from t_roles ";
+        // console.log(sql);
+        const resultados = await conexion.query(sql)
+        // console.log(resultados);
+        return resultados.rows;
+    },
+    async crearusuario (tx_usuario, tx_clave, tx_nombre, co_rol) {
+        const sqlmax = "select MAX(co_usuario) from t_usuarios "
+        const res = await conexion.query(sqlmax)
+        let co_usuario = 1
+        if (res.rows[0].max) {
+            co_usuario = Number(res.rows[0].max) + 1
+        }
+        const sql = "insert into t_usuarios (co_usuario, tx_usuario, tx_clave, tx_nombre, co_rol, in_activa) values ($1, $2, $3, $4, $5, 1)";
+        const resultados = await conexion.query(sql, [co_usuario, tx_usuario, tx_clave, tx_nombre, co_rol])
+        return resultados
     }
 }
