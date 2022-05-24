@@ -313,6 +313,24 @@ app.get(SERVIDOR + '/mostrarresultados', (req, res) => {
     })
 
 })
+app.post(SERVIDOR + '/mostrardetalles', (req, res) => {
+    const { co_resultado } = req.body;
+    resultadomodel.mostrardetalles(co_resultado).then(resp => {
+        if (resp) {
+            res.json({
+                message: "Detalles de encuestas mostrados con Exito",
+                resp,
+                status: 200
+            })
+        }
+    }).catch(err => {
+        res.json({
+            message: "Error mostrando Detalles de encuestas >>>>>>> " + err,
+            status: 500
+        })
+    })
+
+})
 app.post(SERVIDOR + '/graficar', (req, res) => {
     const { co_encuesta, co_seccion, co_topico, co_sede } = req.body;
     resultadomodel.graficar(co_encuesta, co_seccion, co_topico, co_sede).then(resp => {

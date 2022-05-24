@@ -23,7 +23,7 @@ pool.connect(function (err) {
     console.error(err)
     return
   } else {
-    console.log('BD app pasajeros conectada')
+    console.log('BD app privados conectada')
   }
 })
 module.exports = pool

@@ -14,7 +14,7 @@ module.exports = {
             const tx_valor = resultados[i].tx_valor
             const co_usuario = resultados[i].co_usuario
             const co_sede = resultados[i].co_sede
-            
+
             const sqlmax = "select MAX(co_resultado) from t_resultados where co_encuesta = $1 and co_seccion = $2 and co_topico = $3 "
             const res = await conexion.query(sqlmax, [co_encuesta, co_seccion, co_topico])
 
@@ -43,6 +43,17 @@ module.exports = {
         where += " and h.co_topico = 8 and h.co_seccion = 1 and h.co_resultado = a.co_resultado "
 
         const resultados = await conexion.query(select + from + where)
+        return resultados.rows
+    },
+    async mostrardetalles (co_resultado) {
+        const select = "SELECT c.co_seccion, c.tx_seccion, b.co_topico, b.tx_topico, a.co_resultado, a.tx_valor, a.nu_valor "
+        const from = " FROM t_resultados a, t_topicos b , t_secciones c  "
+        let where = " WHERE a.co_resultado = $1 "
+        where += " and a.co_topico=b.co_topico and a.co_seccion = b.co_seccion and a.co_encuesta = b.co_encuesta "
+        where += " and a.co_seccion = c.co_seccion and a.co_encuesta = c.co_encuesta "
+        const order = " ORDER BY co_seccion asc, co_topico asc"
+
+        const resultados = await conexion.query(select + from + where + order, [co_resultado])
         return resultados.rows
     },
     async graficar (co_encuesta, co_seccion, co_topico, co_sede) {
