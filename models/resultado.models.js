@@ -31,9 +31,10 @@ module.exports = {
         return true
     },
     async mostrarresultados () {
-        const select = "SELECT a.co_resultado, a.co_encuesta, a.tx_valor as tipo, b.tx_valor as doc, c.tx_valor as nom1, d.tx_valor as nom2, e.tx_valor as ape1, f.tx_valor as ape2, g.tx_valor as sexo, h.nu_valor as edad "
-        const from = " FROM t_resultados a, t_resultados b, t_resultados c, t_resultados d, t_resultados e, t_resultados f, t_resultados g, t_resultados h "
-        let where = " WHERE a.co_topico = 1 and a.co_seccion = 1 "
+        let select = "SELECT a.co_resultado, a.co_encuesta, a.tx_valor as tipo, b.tx_valor as doc, c.tx_valor as nom1, d.tx_valor as nom2, e.tx_valor as ape1, "
+        select += " f.tx_valor as ape2, g.tx_valor as sexo, h.nu_valor as edad, i.tx_valor as reincide, j.tx_valor as estatus "
+        const from = " FROM t_resultados a, t_resultados b, t_resultados c, t_resultados d, t_resultados e, t_resultados f, t_resultados g, t_resultados h, t_resultados i, t_resultados j "
+        let where = " WHERE a.co_encuesta = 2 and a.co_topico = 1 and a.co_seccion = 1 "
         where += " and b.co_topico = 2 and b.co_seccion = 1 and b.co_resultado = a.co_resultado "
         where += " and c.co_topico = 3 and c.co_seccion = 1 and c.co_resultado = a.co_resultado "
         where += " and d.co_topico = 4 and d.co_seccion = 1 and d.co_resultado = a.co_resultado "
@@ -41,6 +42,8 @@ module.exports = {
         where += " and f.co_topico = 6 and f.co_seccion = 1 and f.co_resultado = a.co_resultado "
         where += " and g.co_topico = 7 and g.co_seccion = 1 and g.co_resultado = a.co_resultado "
         where += " and h.co_topico = 8 and h.co_seccion = 1 and h.co_resultado = a.co_resultado "
+        where += " and i.co_topico = 2 and i.co_seccion = 2 and i.co_resultado = a.co_resultado "
+        where += " and j.co_topico = 5 and j.co_seccion = 2 and j.co_resultado = a.co_resultado "
 
         const resultados = await conexion.query(select + from + where)
         return resultados.rows
