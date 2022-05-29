@@ -31,10 +31,10 @@ module.exports = {
         return true
     },
     async mostrarresultados () {
-        let select = "SELECT a.co_resultado, a.co_encuesta, a.tx_valor as tipo, b.tx_valor as doc, c.tx_valor as nom1, d.tx_valor as nom2, e.tx_valor as ape1, "
+        let select = "SELECT se.tx_sede as sede, a.co_resultado, a.co_encuesta, a.tx_valor as tipo, b.tx_valor as doc, c.tx_valor as nom1, d.tx_valor as nom2, e.tx_valor as ape1, "
         select += " f.tx_valor as ape2, g.tx_valor as sexo, h.nu_valor as edad, i.tx_valor as reincide, j.tx_valor as estatus "
-        const from = " FROM t_resultados a, t_resultados b, t_resultados c, t_resultados d, t_resultados e, t_resultados f, t_resultados g, t_resultados h, t_resultados i, t_resultados j "
-        let where = " WHERE a.co_encuesta = 2 and a.co_topico = 1 and a.co_seccion = 1 "
+        const from = " FROM t_sedes se, t_resultados a, t_resultados b, t_resultados c, t_resultados d, t_resultados e, t_resultados f, t_resultados g, t_resultados h, t_resultados i, t_resultados j "
+        let where = " WHERE a.co_sede = se.co_sede and a.co_encuesta = 2 and a.co_topico = 1 and a.co_seccion = 1 "
         where += " and b.co_topico = 2 and b.co_seccion = 1 and b.co_resultado = a.co_resultado "
         where += " and c.co_topico = 3 and c.co_seccion = 1 and c.co_resultado = a.co_resultado "
         where += " and d.co_topico = 4 and d.co_seccion = 1 and d.co_resultado = a.co_resultado "
@@ -49,9 +49,9 @@ module.exports = {
         return resultados.rows
     },
     async mostrardetalles (co_resultado) {
-        const select = "SELECT c.co_seccion, c.tx_seccion, b.co_topico, b.tx_topico, a.co_resultado, a.tx_valor, a.nu_valor "
-        const from = " FROM t_resultados a, t_topicos b , t_secciones c  "
-        let where = " WHERE a.co_resultado = $1 "
+        const select = "SELECT se.tx_sede as sede, c.co_seccion, c.tx_seccion, b.co_topico, b.tx_topico, a.co_resultado, a.tx_valor, a.nu_valor "
+        const from = " FROM t_sedes se, t_resultados a, t_topicos b , t_secciones c  "
+        let where = " WHERE a.co_resultado = $1 and a.co_sede=se.co_sede "
         where += " and a.co_topico=b.co_topico and a.co_seccion = b.co_seccion and a.co_encuesta = b.co_encuesta "
         where += " and a.co_seccion = c.co_seccion and a.co_encuesta = c.co_encuesta "
         const order = " ORDER BY co_seccion asc, co_topico asc"
